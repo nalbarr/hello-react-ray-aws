@@ -1,0 +1,23 @@
+resources:
+  cloud: aws
+  ports: 8000
+  cpus: 2
+
+workdir: .
+
+setup: |
+  echo "*** setup"
+
+  conda activate hello-pipeline
+  if [ $? -ne 0 ]; then
+    conda create -n hello-pipeline python=3.10 -y
+    conda activate hello-pipeline
+    pip install -r requirements-ray2_81.txt
+  fi  
+
+run: |
+  echo "*** run"
+
+  conda activate hello-pipeline
+
+  python hello-pipeline.py

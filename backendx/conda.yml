@@ -1,0 +1,10 @@
+name: hello-react-ray-aws
+channels:
+  - conda-forge
+  - pytorch
+dependencies:
+  - python=3.9
+  - pytorch::pytorch
+  - pip
+  - pip:
+    - -r requirements.txt

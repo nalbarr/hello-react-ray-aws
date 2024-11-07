@@ -1,0 +1,11 @@
+uvicorn
+# pydantic==1.10.13
+# ray==2.4.0
+ray[default]==2.8.1
+ray[serve]
+httpx
+# NA
+# - https://discuss.ray.io/t/attributeerror-in-serve-deployment-due-to-starlette-change/13461/3
+# starlette
+starlette<=0.34.0
+requests

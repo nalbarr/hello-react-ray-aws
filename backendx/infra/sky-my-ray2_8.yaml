@@ -1,0 +1,48 @@
+num_nodes: 1
+
+resources:
+  cloud: aws
+  region: us-east-2
+  cpus: 2
+  # memory: 16
+  # disk_size: 256
+  # image_id: docker:ubuntu:22.04
+  # image_id: docker:nvcr.io/nvidia/pytorch:23.10-py3
+  image_id: ami-0e52130c2383c47a9
+  ports:
+    # ray ports
+    - 8265-8266
+
+workdir: .
+
+# file_mounts:
+#  /data:
+#    store: s3
+#    source: s3://main3-s3
+  
+setup: |
+  echo "Running setup."
+  # NOTE THAT RAY >= 2.9.0 is not supported
+  # We are installing a separate ray cluster than the one installed by skypilot.
+  conda deactivate
+  conda activate my-ray-2_8
+  if [ $? -ne 0 ]; then
+    conda create -n my-ray-2_8 python=3.10 -y
+    conda activate my-ray-2_8
+    # conda install pip
+    # pip install 'ray[default]==2.8.1'
+    pip install -r requirements-my-ray-2_8.txt  
+  fi
+
+run: |
+  num_nodes=`echo "$SKYPILOT_NODE_IPS" | wc -l`
+  head_ip=`echo "$SKYPILOT_NODE_IPS" | head -n1`
+  conda deactivate
+  conda activate my-ray-2_8
+  if [ "$SKYPILOT_NODE_RANK" == "0" ]; then
+    ps aux | grep ray | grep 6379 &> /dev/null || ray start --head  --disable-usage-stats --port 6379 --ray-client-server-port 9999 
+    sleep 10
+  else
+    sleep 15
+    ps aux | grep ray | grep 6379 &> /dev/null || ray start --address $head_ip:6379 --disable-usage-stats
+  fi

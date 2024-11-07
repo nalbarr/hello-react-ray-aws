@@ -1,0 +1,30 @@
+resources:
+  cloud: aws
+  ports: 8000
+  cpus: 2
+
+workdir: .
+
+setup: |
+  echo "*** setup"
+
+  conda deactivate
+  pip install uv
+  uv venv --python=3.9
+  source .venv/bin/activate
+
+  uv pip install -r requirements.txt
+
+  python -V
+
+run: |
+  echo "*** run"
+
+  conda deactivate
+  source .venv/bin/activate
+
+  python -V
+
+  # NA
+  # - does not work? can not find some ray dependencies
+  python main3.py

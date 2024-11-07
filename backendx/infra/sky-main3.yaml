@@ -1,0 +1,24 @@
+resources:
+  cloud: aws
+  ports: 8000
+  cpus: 4
+
+workdir: .
+
+setup: |
+  echo "*** setup"
+
+  conda activate hello-react-ray-aws
+  if [ $? -ne 0 ]; then
+    conda create -n hello-react-ray-aws python=3.9 -y
+    conda activate hello-react-ray-aws 
+    pip install -r requirements.txt
+  fi  
+
+run: |
+  echo "*** run"
+
+  conda activate hello-react-ray-aws 
+
+  # python hello.py
+  python main3.py
